@@ -57,4 +57,12 @@ public class Model {
 		return count ;
 	}
 
+	public Station getStationByID(int stationID) {
+		for(Station s: stations) {
+			if( s.getStationID()==stationID)
+				return s ;
+		}
+		return null ;
+	}
+	
 }
