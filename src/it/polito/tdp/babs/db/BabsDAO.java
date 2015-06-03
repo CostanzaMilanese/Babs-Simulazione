@@ -4,9 +4,11 @@ import it.polito.tdp.babs.model.Station;
 import it.polito.tdp.babs.model.Trip;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -100,6 +102,35 @@ public class BabsDAO {
 		
 		return result ;
 	}
+	
+	public List<Trip> getTripsOfDay(LocalDate day) {
+		List<Trip> result = new LinkedList<Trip>() ;
+		
+		Connection conn = DBConnect.getConnection() ;
+		
+		String sql = "SELECT * FROM trip WHERE DATE(startDate)=?" ;
+		
+		try {
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setDate(1, Date.valueOf(day));
+			
+			ResultSet rs = st.executeQuery() ;
+			
+			while(rs.next()) {
+				result.add( buildTrip(rs) ) ;
+			}
+			
+			st.close() ;
+			conn.close() ;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error in database query", e) ;
+		}
+		
+		return result ;
+	}
+
 	
 	public int numTrip(Station partenza, Station arrivo) {
 		
