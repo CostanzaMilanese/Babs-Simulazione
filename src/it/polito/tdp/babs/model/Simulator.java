@@ -13,6 +13,12 @@ public class Simulator {
 		PICK, DROP
 	};
 
+	/**
+	 * Evento simulato: la PRESA o il RIENTRO di una bicicletta
+	 * 
+	 * @author Fulvio Corno
+	 *
+	 */
 	private class SimEvent implements Comparable<SimEvent> {
 		private BikeEvent type;
 		private LocalDateTime time;
@@ -50,15 +56,23 @@ public class Simulator {
 		}
 	}
 
+	// La coda di simulazione
 	private PriorityQueue<SimEvent> queue = new PriorityQueue<Simulator.SimEvent>();
 
 	private double K; // percentuale di riempimento iniziale
 
+	// Numero di biciclette in ciascuna stazione
 	private Map<Station, Integer> occupancy;
 
+	// Risultati della simulazione
 	private int failedPicks;
 	private int failedDrops;
 
+	/**
+	 * Inizializza un nuovo simulatore per il calcolo di prese/rientri falliti
+	 * @param K rapporto di occupazione (tra 0.0 ed 1.1)
+	 * @param model il modello
+	 */
 	public Simulator(double K, Model model) {
 		this.K = K;
 		this.model = model ;
@@ -66,7 +80,7 @@ public class Simulator {
 		// Calcola l'occupazione iniziale (K% dei posti disponibili)
 		occupancy = new HashMap<>();
 		for (Station s : model.getStations()) {
-			int bikes = (int) (s.getDockCount() * K);
+			int bikes = (int) (s.getDockCount() * this.K);
 			occupancy.put(s, bikes);
 		}
 
@@ -80,6 +94,11 @@ public class Simulator {
 		failedPicks = 0;
 	}
 
+	/**
+	 * Esegue la simulazione
+	 * 
+	 * @return numero di eventi simulati
+	 */
 	public int run() {
 		
 		int events = 0 ;
@@ -102,6 +121,7 @@ public class Simulator {
 					occupancy.put(s, occupancy.get(s) - 1);
 					queue.add(new SimEvent(BikeEvent.DROP, t.getEndDate(),
 							model.getStationByID(t.getEndStationID()), t));
+					// nota: se la PRESA non riesce, allora NON bisogna schedulare il rientro
 				}
 
 				break;

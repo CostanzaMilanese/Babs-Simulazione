@@ -31,12 +31,22 @@ public class Model {
 		stations = dao.getAllStations() ; 
 	}
 
+	/**
+	 * Carica tutti e soli i trip della giornata specificata
+	 * @param day giorno da caricare
+	 * @return numero di trip caricati
+	 */
 	public int loadTripsOfTheDay(LocalDate day) {
 		BabsDAO dao = new BabsDAO() ;
 		tripsOfTheDay = dao.getTripsOfDay(day) ;
 		return tripsOfTheDay.size() ;
 	}
 	
+	/** 
+	 * Conta il numero di trip, nel giorno corrente, che partono dalla stazione specificata
+	 * @param depart stazione di partenza
+	 * @return numero di trip
+	 */
 	public int countDepartingTrips(Station depart) {
 		int count=0 ;
 		for(Trip t : tripsOfTheDay) {
@@ -47,6 +57,11 @@ public class Model {
 		return count ;
 	}
 
+	/** 
+	 * Conta il numero di trip, nel giorno corrente, che rientrano nella stazione specificata
+	 * @param arrival stazione di arrivo
+	 * @return numero di trip
+	 */
 	public int countArrivingTrips(Station arrival) {
 		int count=0 ;
 		for(Trip t : tripsOfTheDay) {
@@ -57,6 +72,12 @@ public class Model {
 		return count ;
 	}
 
+	/**
+	 * Dato l'ID di una Station, trova l'oggetto Station corrispondente nella lista del modello.
+	 * Nota: potrebbe essere ottimizzato costruendo una mappa ID->Station
+	 * @param stationID identificavo numerico di una stazione
+	 * @return oggetto Station corrispondente, oppure null se non esiste
+	 */
 	public Station getStationByID(int stationID) {
 		for(Station s: stations) {
 			if( s.getStationID()==stationID)
