@@ -9,6 +9,7 @@ public class Model {
 	
 	private List<Station> stations ;
 	private List<Trip> tripsOfTheDay ;
+	private String prova ;
 
 	/**
 	 * The list of all loaded {@link Station}s.
